@@ -10,8 +10,10 @@ https://hub.docker.com/r/danedmunds/pem-to-jwk/
 - `--public` outputs the public representation only
 - `--jwks-out` outputs the key wrapped in the [JWKS](https://tools.ietf.org/html/rfc7517) structure
 - `--pretty` outputs the results in an easy-to-read format
+- `--file:<path>` read key from file instead of stdin
+- `--kid:<kid>` set kid instead of default hash
 
-## Sample usage
+## Sample usage with docker
 ```
 > openssl ecparam -name secp384r1 -genkey -noout | docker run -i danedmunds/pem-to-jwk:latest
 {"kty":"EC","kid":"LlMxHk_9inau_uVWXNml7JijPYnICi8iaJBS8JiMgRc","crv":"P-384","x":"BJdH_VYdDAnwW7a1M1yKMIyyQW2gJnyoNKQ2GVAWbl5w-mwUSF58i4rK6t7HWgD6","y":"OyG13CVNkP_TjxhUH0U567mzY_CyyXneikv5AXiMHOT0xWUkS7IChm1mtLl50W-8","d":"eBYccpIgxYTwCJfYnm8vQBNX5BLo15plucJeLGg_6bCw4j7Z-qplo9y2GCCI_mNM"}
@@ -105,6 +107,19 @@ EOF
 {
   "kty": "RSA",
   "kid": "lnZx2lNuR1I7SwlO9MeYn9hZbbwhf57DmKK5RSlEu-E",
+  "n": "zremgrCTOkuP6TJwwx-tre_wngN7K0i--Cbno89MRcCO7rl_FhCCNVdjnPTBDPMJLcOWNnBknIFlCRmep9Z-Q4hH_hnXsTCZ1TI2aBdApf8_Q7GeFa7WWDxM0tbfkcZkUYLhsQeqQs3TT9_gz0-Bhm0Zd8x3lItChpyoP048Shd-pWF9xGXKMO3Kz03-oF4XDb3TECFyN7iAvWlCbfOalfOd7TzNRVvasJeuHefzvLxJwnRE2LdgwlCRLY5T1kg4cTBg6uiO_6XHUJlJqaX_WxpBt1usD1P_PIcTrBBYumlbYlXaxNT49OybKPktRkw8t69zbzbD5D25EoOzkBTXWw",
+  "e": "AQAB"
+}
+```
+
+## Sample usage with node command line
+
+```
+> node index.js --file:sample.pem --kid:my-key --public --pretty
+
+{
+  "kty": "RSA",
+  "kid": "my-key",
   "n": "zremgrCTOkuP6TJwwx-tre_wngN7K0i--Cbno89MRcCO7rl_FhCCNVdjnPTBDPMJLcOWNnBknIFlCRmep9Z-Q4hH_hnXsTCZ1TI2aBdApf8_Q7GeFa7WWDxM0tbfkcZkUYLhsQeqQs3TT9_gz0-Bhm0Zd8x3lItChpyoP048Shd-pWF9xGXKMO3Kz03-oF4XDb3TECFyN7iAvWlCbfOalfOd7TzNRVvasJeuHefzvLxJwnRE2LdgwlCRLY5T1kg4cTBg6uiO_6XHUJlJqaX_WxpBt1usD1P_PIcTrBBYumlbYlXaxNT49OybKPktRkw8t69zbzbD5D25EoOzkBTXWw",
   "e": "AQAB"
 }

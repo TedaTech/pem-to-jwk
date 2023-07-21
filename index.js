@@ -19,7 +19,7 @@ let data
 
 let extras = {}
 if (kid) {
-  extras.kid = "sas"
+  extras.kid = kid
 }
 
 function convert() {
