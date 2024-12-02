@@ -64,3 +64,9 @@ typings/
 .vscode
 *.pem
 *.key
+
+# Aider
+.aider*
+
+# IntelliJ
+.idea
