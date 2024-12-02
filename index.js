@@ -66,18 +66,18 @@ if (argv.extra) {
   })
 }
 
-function convert() {
+function convert () {
   jose.JWK.asKey(data, 'pem', extras)
-  .then(function (result) {
-    let res = result.toJSON(!publicOnly)
-    if (wrapInJwks) {
-      res = {
-        keys: [ res ]
+    .then(function (result) {
+      let res = result.toJSON(!publicOnly)
+      if (wrapInJwks) {
+        res = {
+          keys: [ res ]
+        }
       }
-    }
-    let output = pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res)
-    console.log(output)
-  })
+      let output = pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res)
+      console.log(output)
+    })
 }
 
 if (file) {
@@ -85,7 +85,7 @@ if (file) {
     data = fs.readFileSync(file, 'utf8')
   } catch (err) {
     console.error(err)
-    return
+    process.exit(1)
   }
 }
 
