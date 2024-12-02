@@ -1,21 +1,46 @@
 const jose = require('node-jose')
 const fs = require('fs')
+const yargs = require('yargs')
 process.stdin.setEncoding('utf8')
 
-let args = process.argv.splice(2)
-const publicOnly = args.includes('--public')
-const wrapInJwks = args.includes('--jwks-out')
-const pretty = args.includes('--pretty')
-let kid, file
-args.forEach(function(element) {
-  if (element.indexOf('--kid:') == 0) {
-    kid = element.substring(6);
-  } else if (element.indexOf('--file:') == 0) {
-    file = element.substring(7);
-  }
-})
+const argv = yargs
+  .usage('Usage: $0 [options]')
+  .option('public', {
+    alias: 'p',
+    type: 'boolean',
+    description: 'Output public key only'
+  })
+  .option('jwks-out', {
+    alias: 'j',
+    type: 'boolean',
+    description: 'Wrap output in a JWKS structure'
+  })
+  .option('pretty', {
+    alias: 't',
+    type: 'boolean',
+    description: 'Pretty-print the output JSON'
+  })
+  .option('kid', {
+    alias: 'k',
+    type: 'string',
+    description: 'Set the Key ID (kid) parameter'
+  })
+  .option('file', {
+    alias: 'f',
+    type: 'string',
+    description: 'Input file to read the key from'
+  })
+  .help('h')
+  .alias('h', 'help')
+  .argv
 
-let data
+const publicOnly = argv.public || false
+const wrapInJwks = argv['jwks-out'] || false
+const pretty = argv.pretty || false
+const kid = argv.kid
+const file = argv.file
+
+let data = ''
 
 let extras = {}
 if (kid) {
@@ -45,16 +70,19 @@ if (file) {
   }
 }
 
-if (!data) {
-  process.stdin.on('readable', () => {
-    const chunk = process.stdin.read()
-    if (chunk !== null) {
-      data += chunk
-    }
+if (file) {
+  try {
+    data = fs.readFileSync(file, 'utf8')
+    convert()
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
+} else {
+  process.stdin.on('data', (chunk) => {
+    data += chunk
   })
   process.stdin.on('end', () => {
-    convert();
+    convert()
   })
-} else {
-  convert();
 }
