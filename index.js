@@ -25,6 +25,12 @@ const argv = yargs
     type: 'string',
     description: 'Set the Key ID (kid) parameter'
   })
+  .option('extra', {
+    alias: 'e',
+    type: 'string',
+    description: 'Additional key=value pairs to include',
+    multiple: true
+  })
   .option('file', {
     alias: 'f',
     type: 'string',
@@ -42,9 +48,22 @@ const file = argv.file
 
 let data = ''
 
-let extras = {}
+const extras = {}
 if (kid) {
   extras.kid = kid
+}
+
+if (argv.extra) {
+  const extraProps = Array.isArray(argv.extra) ? argv.extra : [argv.extra]
+  extraProps.forEach(pair => {
+    const [key, value] = pair.split('=')
+    if (key && value) {
+      extras[key] = value
+    } else {
+      console.error(`Invalid format for --extra option: ${pair}. Expected key=value.`)
+      process.exit(1)
+    }
+  })
 }
 
 function convert() {
