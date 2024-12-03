@@ -1,7 +1,8 @@
-const jose = require('node-jose')
-const fs = require('fs')
-const { Command } = require('commander')
-process.stdin.setEncoding('utf8')
+'use strict'
+
+import jose from 'node-jose'
+import fs from 'fs'
+import { Command } from 'commander'
 
 const program = new Command()
 
@@ -38,6 +39,7 @@ async function readFile (file) {
 async function readStdin () {
   return new Promise((resolve, reject) => {
     let data = ''
+    process.stdin.setEncoding('utf8')
     process.stdin.on('data', (chunk) => {
       data += chunk
     })
@@ -91,4 +93,4 @@ program
       })
   })
 
-program.parse()
+export default program
