@@ -59,6 +59,7 @@ program
   .option('-k, --kid <kid>', 'Set the Key ID (kid) parameter')
   .option('-e, --extra <key=value...>', 'Additional key=value pairs to include', collectExtras, [])
   .option('-f, --file <path>', 'Input file to read the key from')
+  .option('-o, --out <path>', 'Output file path (default: stdout)')
   .helpOption('-h, --help', 'Show help')
   .action(async (options, command) => {
     const output = command.configureOutput()
@@ -88,7 +89,11 @@ program
       }
     }
     const json = options.pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res)
-    output.writeOut(json)
+    if (options.out) {
+      await fs.promises.writeFile(options.out, json, 'utf8')
+    } else {
+      output.writeOut(json)
+    }
   })
 
 module.exports = program
