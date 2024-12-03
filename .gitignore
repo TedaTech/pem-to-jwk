@@ -64,6 +64,7 @@ typings/
 .vscode
 *.pem
 *.key
+!test/data/*.key
 
 # Aider
 .aider*
