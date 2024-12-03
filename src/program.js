@@ -1,8 +1,8 @@
 'use strict'
 
-import jose from 'node-jose'
-import fs from 'fs'
-import { Command } from 'commander'
+const jose = require('node-jose')
+const fs = require('node:fs')
+const { Command } = require('commander')
 
 const program = new Command()
 
@@ -60,7 +60,8 @@ program
   .option('-e, --extra <key=value...>', 'Additional key=value pairs to include', collectExtras, [])
   .option('-f, --file <path>', 'Input file to read the key from')
   .helpOption('-h, --help', 'Show help')
-  .action(async (options) => {
+  .action(async (options, command) => {
+    const output = command.configureOutput()
     const data = options.file ? await readFile(options.file) : await readStdin()
 
     const keyProps = {}
@@ -74,23 +75,20 @@ program
         if (key && value) {
           keyProps[key] = value
         } else {
-          console.error(`Invalid format for --extra option: ${pair}. Expected key=value.`)
-          process.exit(1)
+          program.error(`Invalid format for --extra option: ${pair}. Expected key=value.`)
         }
       })
     }
 
-    jose.JWK.asKey(data, 'pem', keyProps)
-      .then(function (result) {
-        let res = result.toJSON(!options.public)
-        if (options.jwksOut) {
-          res = {
-            keys: [ res ]
-          }
-        }
-        let output = options.pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res)
-        console.log(output)
-      })
+    const result = await jose.JWK.asKey(data, 'pem', keyProps)
+    let res = result.toJSON(!options.public)
+    if (options.jwksOut) {
+      res = {
+        keys: [res]
+      }
+    }
+    const json = options.pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res)
+    output.writeOut(json)
   })
 
-export default program
+module.exports = program
