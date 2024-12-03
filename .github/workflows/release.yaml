@@ -38,7 +38,7 @@ jobs:
             uses: docker/build-push-action@v6
             with:
               push: true
-              platforms: ${{ steps.qemu.outputs.platforms }}
+              platforms: linux/amd64,linux/arm64
               tags: |
                 tedatech/pem-to-jwk:${{ steps.semantic-release-tags.outputs.new_release_version }}
                 tedatech/pem-to-jwk:latest
