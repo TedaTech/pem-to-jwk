@@ -3,24 +3,32 @@ Converts PEM formatted keys to JWK
 
 Uses [node-jose](https://github.com/cisco/node-jose) to convert PEM formatted crypto keys to [JWK](https://tools.ietf.org/html/rfc7517) format.
 
-https://hub.docker.com/r/danedmunds/pem-to-jwk/
+https://hub.docker.com/r/tedatech/pem-to-jwk/
 
 ## Options
 
-- `--public` outputs the public representation only
-- `--jwks-out` outputs the key wrapped in the [JWKS](https://tools.ietf.org/html/rfc7517) structure
-- `--pretty` outputs the results in an easy-to-read format
-- `--file:<path>` read key from file instead of stdin
-- `--kid:<kid>` set kid instead of default hash
+```
+$ docker run -i tedatech/pem-to-jwk:latest
+
+Options:
+      --version   Show version number                                  [boolean]
+  -p, --public    Output public key only                               [boolean]
+  -j, --jwks-out  Wrap output in a JWKS structure                      [boolean]
+  -t, --pretty    Pretty-print the output JSON                         [boolean]
+  -k, --kid       Set the Key ID (kid) parameter                        [string]
+  -e, --extra     Additional key=value pairs to include                 [string]
+  -f, --file      Input file to read the key from                       [string]
+  -h, --help      Show help                                            [boolean]
+```
 
 ## Sample usage with docker
 ```
-> openssl ecparam -name secp384r1 -genkey -noout | docker run -i danedmunds/pem-to-jwk:latest
+> openssl ecparam -name secp384r1 -genkey -noout | docker run -i tedatech/pem-to-jwk:latest
 {"kty":"EC","kid":"LlMxHk_9inau_uVWXNml7JijPYnICi8iaJBS8JiMgRc","crv":"P-384","x":"BJdH_VYdDAnwW7a1M1yKMIyyQW2gJnyoNKQ2GVAWbl5w-mwUSF58i4rK6t7HWgD6","y":"OyG13CVNkP_TjxhUH0U567mzY_CyyXneikv5AXiMHOT0xWUkS7IChm1mtLl50W-8","d":"eBYccpIgxYTwCJfYnm8vQBNX5BLo15plucJeLGg_6bCw4j7Z-qplo9y2GCCI_mNM"}
 ```
 
 ```
-> openssl ecparam -name secp384r1 -genkey -noout | docker run -i danedmunds/pem-to-jwk:latest --public --pretty
+> openssl ecparam -name secp384r1 -genkey -noout | docker run -i tedatech/pem-to-jwk:latest --public --pretty
 {
   "kty": "EC",
   "kid": "poTlaX5_RzO4okPyFn4yWfJKlTazLlQFv3s8wKWJ1mQ",
@@ -31,7 +39,7 @@ https://hub.docker.com/r/danedmunds/pem-to-jwk/
 ```
 
 ```
-> docker run -i danedmunds/pem-to-jwk:latest --pretty <<EOF
+> docker run -i tedatech/pem-to-jwk:latest --pretty <<EOF
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpQIBAAKCAQEAzremgrCTOkuP6TJwwx+tre/wngN7K0i++Cbno89MRcCO7rl/
 FhCCNVdjnPTBDPMJLcOWNnBknIFlCRmep9Z+Q4hH/hnXsTCZ1TI2aBdApf8/Q7Ge

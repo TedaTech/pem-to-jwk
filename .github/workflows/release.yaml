@@ -33,7 +33,9 @@ jobs:
             uses: docker/build-push-action@v6
             with:
               push: true
-              tags: tedatech/pem-to-jwk:${{ steps.semantic-release-tags.outputs.new_release_version }}
+              tags: |
+                tedatech/pem-to-jwk:${{ steps.semantic-release-tags.outputs.new_release_version }}
+                tedatech/pem-to-jwk:latest
               cache-from: type=gha
               cache-to: type=gha,mode=max
           - name: Semantic Release - release
