@@ -1,50 +1,32 @@
 const jose = require('node-jose')
 const fs = require('fs')
-const yargs = require('yargs')
+const { Command } = require('commander')
 process.stdin.setEncoding('utf8')
 
-const argv = yargs
-  .usage('Usage: $0 [options]')
-  .option('public', {
-    alias: 'p',
-    type: 'boolean',
-    description: 'Output public key only'
-  })
-  .option('jwks-out', {
-    alias: 'j',
-    type: 'boolean',
-    description: 'Wrap output in a JWKS structure'
-  })
-  .option('pretty', {
-    alias: 't',
-    type: 'boolean',
-    description: 'Pretty-print the output JSON'
-  })
-  .option('kid', {
-    alias: 'k',
-    type: 'string',
-    description: 'Set the Key ID (kid) parameter'
-  })
-  .option('extra', {
-    alias: 'e',
-    type: 'string',
-    description: 'Additional key=value pairs to include',
-    multiple: true
-  })
-  .option('file', {
-    alias: 'f',
-    type: 'string',
-    description: 'Input file to read the key from'
-  })
-  .help('h')
-  .alias('h', 'help')
-  .argv
+function collectExtras(value, previous) {
+  return previous.concat([value])
+}
 
-const publicOnly = argv.public || false
-const wrapInJwks = argv['jwks-out'] || false
-const pretty = argv.pretty || false
-const kid = argv.kid
-const file = argv.file
+const program = new Command()
+
+program
+  .usage('[options]')
+  .option('-p, --public', 'Output public key only')
+  .option('-j, --jwks-out', 'Wrap output in a JWKS structure')
+  .option('-t, --pretty', 'Pretty-print the output JSON')
+  .option('-k, --kid <kid>', 'Set the Key ID (kid) parameter')
+  .option('-e, --extra <key=value...>', 'Additional key=value pairs to include', collectExtras, [])
+  .option('-f, --file <path>', 'Input file to read the key from')
+  .helpOption('-h, --help', 'Show help')
+  .version('1.0.0')
+  .parse(process.argv)
+
+const options = program.opts()
+const publicOnly = options.public || false
+const wrapInJwks = options.jwksOut || false
+const pretty = options.pretty || false
+const kid = options.kid
+const file = options.file
 
 let data = ''
 
@@ -53,9 +35,8 @@ if (kid) {
   extras.kid = kid
 }
 
-if (argv.extra) {
-  const extraProps = Array.isArray(argv.extra) ? argv.extra : [argv.extra]
-  extraProps.forEach(pair => {
+if (options.extra && options.extra.length > 0) {
+  options.extra.forEach(pair => {
     const [key, value] = pair.split('=')
     if (key && value) {
       extras[key] = value
@@ -80,14 +61,6 @@ function convert () {
     })
 }
 
-if (file) {
-  try {
-    data = fs.readFileSync(file, 'utf8')
-  } catch (err) {
-    console.error(err)
-    process.exit(1)
-  }
-}
 
 if (file) {
   try {
