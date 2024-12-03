@@ -21,15 +21,17 @@
   },
   "homepage": "https://github.com/TedaTech/pem-to-jwk#readme",
   "dependencies": {
-    "node-jose": "^2.2.0",
-    "yargs": "^17.0.1"
+    "commander": "^12.1.0",
+    "node-jose": "^2.2.0"
   },
   "devDependencies": {
     "semantic-release": "^24.2.0",
     "standard": "^12.0.1"
   },
   "release": {
-    "branches": ["master"],
+    "branches": [
+      "master"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
