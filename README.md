@@ -10,15 +10,18 @@ https://hub.docker.com/r/tedatech/pem-to-jwk/
 ```
 $ docker run -i tedatech/pem-to-jwk:latest
 
+Usage: pem-to-jwk [options]
+
+Convert a PEM-encoded key to a JWK
+
 Options:
-      --version   Show version number                                  [boolean]
-  -p, --public    Output public key only                               [boolean]
-  -j, --jwks-out  Wrap output in a JWKS structure                      [boolean]
-  -t, --pretty    Pretty-print the output JSON                         [boolean]
-  -k, --kid       Set the Key ID (kid) parameter                        [string]
-  -e, --extra     Additional key=value pairs to include                 [string]
-  -f, --file      Input file to read the key from                       [string]
-  -h, --help      Show help                                            [boolean]
+  -p, --public                Output public key only (default: false)
+  -j, --jwks-out              Wrap output in a JWKS structure (default: false)
+  -t, --pretty                Pretty-print the output JSON (default: false)
+  -k, --kid <kid>             Set the Key ID (kid) parameter
+  -e, --extra <key=value...>  Additional key=value pairs to include (default: [])
+  -f, --file <path>           Input file to read the key from
+  -h, --help                  Show help
 ```
 
 ## Sample usage with docker
@@ -83,7 +86,7 @@ EOF
 ```
 
 ```
-docker run -i danedmunds/pem-to-jwk:latest --public --pretty <<EOF
+docker run -i tedatech/pem-to-jwk:latest --public --pretty <<EOF
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpQIBAAKCAQEAzremgrCTOkuP6TJwwx+tre/wngN7K0i++Cbno89MRcCO7rl/
 FhCCNVdjnPTBDPMJLcOWNnBknIFlCRmep9Z+Q4hH/hnXsTCZ1TI2aBdApf8/Q7Ge
@@ -123,7 +126,7 @@ EOF
 ## Sample usage with node command line
 
 ```
-> node index.js --file:sample.pem --kid:my-key --public --pretty
+> node index.js --file sample.pem --kid my-key --public --pretty
 
 {
   "kty": "RSA",
