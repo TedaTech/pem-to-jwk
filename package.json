@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/TedaTech/pem-to-jwk#readme",
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^13.0.0",
     "node-jose": "^2.2.0"
   },
   "devDependencies": {
